@@ -1,0 +1,19 @@
+# Contenido del archivo .dockerignore
+Dockerfile
+.dockerignore
+**/.dockerignore
+**/.git
+**/.gitignore
+**/.project
+**/.settings
+**/*.swp
+**/bin
+**/obj
+**/node_modules
+README.md
+.git
+.vs/
+.vscode/
+Dockerfile*
+docker-compose*
+.docker/
