@@ -47,7 +47,7 @@
                             loop 
                             playsinline>
                             
-                            <source src="~/Video/avatar 3 trailer.mp4 " type="video/mp4">
+                            <source src="~/Video/avatar-3-trailer.mp4 " type="video/mp4">
                             Tu navegador no soporta el tag de video.
                         </video>
                     </div>
@@ -187,170 +187,210 @@
                 </div>
             </section>
 
-            <section class="content-row">
+           <section class="content-row">
                 <h2 class="row-title">
                     <span>Películas</span>
-                    <a href="#">Ver más <i class="fa-solid fa-angle-right"></i></a>
+                    @* Este enlace lleva a la página que muestra TODAS las películas *@
+                    <a href="/Home/Pelis">Ver más <i class="fa-solid fa-angle-right"></i></a>
                 </h2>
                 <div class="posters-container">
-                    <div class="poster-card">
-                        <img src="~/IMG/img pelis/anillos.png" alt="El señor de los anillos">
-                        <div class="poster-info">
-                            <div class="title">El señor de los anillos</div>
-                        </div>
-                    </div>
-                    <div class="poster-card">
-                        <img src="~/IMG/img pelis/interstellar.jpg" alt="Interstellar">
-                        <div class="poster-info">
-                            <div class="title">Interstellar</div>
-                        </div>
-                    </div>
-                    <div class="poster-card">
-                        <img src="~/IMG/img pelis/elviajedechihiro.jpg" alt="El viaje de Chihiro">
-                        <div class="poster-info">
-                            <div class="title">El viaje de Chihiro</div>
-                        </div>
-                    </div>
-                    <div class="poster-card">
-                        <img src="~/IMG/img pelis/lluviadehamburguesas.jpg" alt="Lluvia de hamburguesas">
-                        <div class="poster-info">
-                            <div class="title">Lluvia de hamburguesas</div>
-                        </div>
-                    </div>
+                    
+                    @* Bucle para dibujar cada película del ViewModel *@
+                    @foreach (var pelicula in Model.Peliculas)
+                    {
+                        @* Usamos un <a> para que cada tarjeta sea un link a la página de Detalles.
+                           Asumo que tu página de detalles se llama 'Detalles'
+                        *@
+                        <a href="/Home/Detalles/@pelicula.Id" class="poster-card">
+                            <img src="~/IMG/img-pelis/@pelicula.ImagenPublicId" alt="@pelicula.Nombre_Peli">
+                            <div class="poster-info">
+                                <div class="title">@pelicula.Nombre_Peli</div>
+                            </div>
+                        </a>
+                    }
+                    
+                    @* Si no hay películas, puedes mostrar un mensaje *@
+                    @* LÍNEA CORREGIDA *@
+                    @if (Model.Peliculas.Count == 0)
+                    {
+                        <p>No hay películas para mostrar en este momento.</p>
+                    }
+                    
                 </div>
             </section>
-            
+
             <section class="content-row">
                 <h2 class="row-title">
                     <span>Series</span>
-                    <a href="#">Ver más <i class="fa-solid fa-angle-right"></i></a>
+                    @* Este enlace lleva a la página que muestra TODAS las series *@
+                    <a href="/Home/Series">Ver más <i class="fa-solid fa-angle-right"></i></a>
                 </h2>
                  <div class="posters-container">
-                    <div class="poster-card">
-                        <img src="~/IMG/img pelis/merlina.png" alt="Merlina">
-                        <div class="poster-info">
-                            <div class="title">Merlina</div>
-                        </div>
-                    </div>
-                    <div class="poster-card">
-                        <img src="~/IMG/img pelis/strangerthings.jpg" alt="Stranger Things">
-                        <div class="poster-info">
-                            <div class="title">Stranger Things</div>
-                        </div>
-                    </div>
-                    <div class="poster-card">
-                        <img src="~/IMG/img pelis/squidgame.jpg" alt="Squid Game">
-                        <div class="poster-info">
-                            <div class="title">Squid Game</div>
-                        </div>
-                    </div>
-                    <div class="poster-card">
-                        <img src="~/IMG/img pelis/euphoria.jpg" alt="Euphoria">
-                        <div class="poster-info">
-                            <div class="title">Euphoria</div>
-                        </div>
-                    </div>
+
+                    @* Bucle para dibujar cada serie del ViewModel *@
+                    @foreach (var serie in Model.Series)
+                    {
+                        @* Asumo que tienes una página de detalles para series, 
+                           quizás '/Home/DetallesSerie/@serie.Id' 
+                        *@
+                        <a href="/Home/DetallesSerie/@serie.Id" class="poster-card">
+                            <img src="~/IMG/img-pelis/@serie.ImagenPublicId" alt="@serie.Nombre_Serie">
+                            <div class="poster-info">
+                                <div class="title">@serie.Nombre_Serie</div>
+                            </div>
+                        </a>
+                    }
+
+                    @* Si no hay series, puedes mostrar un mensaje *@
+                    @* LÍNEA CORREGIDA *@
+                    @if (Model.Peliculas.Count == 0)
+                    {
+                        <p>No hay series para mostrar en este momento.</p>
+                    }
+
                 </div>
             </section>
         </div>
     </main>
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const slides = document.querySelectorAll('.hero-slide');
-            const nextButton = document.querySelector('.slider-nav.next');
-            const prevButton = document.querySelector('.slider-nav.prev');
-            let currentSlide = 0;
-            let slideTimer;
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- CÓDIGO DEL SLIDER DE HÉROE ---
+        const slides = document.querySelectorAll('.hero-slide');
+        const nextButton = document.querySelector('.slider-nav.next');
+        const prevButton = document.querySelector('.slider-nav.prev');
+        let currentSlide = 0;
+        let slideTimer;
 
-            function showSlide(index) {
-                // 1. Limpiar temporizador de imagen anterior
-                clearTimeout(slideTimer);
+        function showSlide(index) {
+            // 1. Limpiar temporizador de imagen anterior
+            clearTimeout(slideTimer);
 
-                // 2. Limpiar video y botón de mute anterior
-                const oldActiveSlide = document.querySelector('.hero-slide.active');
-                if (oldActiveSlide) {
-                    const oldVideo = oldActiveSlide.querySelector('video');
-                    const oldMuteButton = oldActiveSlide.querySelector('.mute-toggle');
-                    if (oldVideo) {
-                        oldVideo.pause();
-                        oldVideo.onended = null;
-                        if (oldMuteButton) oldMuteButton.onclick = null; // Limpia el listener
-                    }
+            // 2. Limpiar video y botón de mute anterior
+            const oldActiveSlide = document.querySelector('.hero-slide.active');
+            if (oldActiveSlide) {
+                const oldVideo = oldActiveSlide.querySelector('video');
+                const oldMuteButton = oldActiveSlide.querySelector('.mute-toggle');
+                if (oldVideo) {
+                    oldVideo.pause();
+                    oldVideo.onended = null;
+                    if (oldMuteButton) oldMuteButton.onclick = null; // Limpia el listener
                 }
+            }
 
-                // 3. Ocultar todos los slides
-                slides.forEach(slide => {
-                    slide.classList.remove('active');
-                });
+            // 3. Ocultar todos los slides
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // 4. Calcular el nuevo índice
+            if (index >= slides.length) currentSlide = 0;
+            else if (index < 0) currentSlide = slides.length - 1;
+            else currentSlide = index;
+            
+            // 5. Mostrar el slide actual
+            const newActiveSlide = slides[currentSlide];
+            newActiveSlide.classList.add('active');
+
+            // 6. Revisar el contenido del NUEVO slide
+            const newVideo = newActiveSlide.querySelector('video');
+            const muteButton = newActiveSlide.querySelector('.mute-toggle'); // Busca el botón
+            const muteIcon = muteButton ? muteButton.querySelector('i') : null; // Verificación
+
+            if (newVideo) {
+                // --- SI ES VIDEO ---
                 
-                // 4. Calcular el nuevo índice
-                if (index >= slides.length) currentSlide = 0;
-                else if (index < 0) currentSlide = slides.length - 1;
-                else currentSlide = index;
-                
-                // 5. Mostrar el slide actual
-                const newActiveSlide = slides[currentSlide];
-                newActiveSlide.classList.add('active');
-
-                // 6. Revisar el contenido del NUEVO slide
-                const newVideo = newActiveSlide.querySelector('video');
-                const muteButton = newActiveSlide.querySelector('.mute-toggle'); // Busca el botón
-                const muteIcon = muteButton.querySelector('i');
-
-                if (newVideo) {
-                    // --- SI ES VIDEO ---
-                    
+                if (muteButton) { // Solo si existe el botón
                     // A. Mostrar y configurar el botón de mute
                     muteButton.style.display = 'flex'; // Muestra el botón
                     
                     // Asegurarse que el video SIEMPRE empiece muteado
                     newVideo.muted = true;
-                    muteIcon.className = 'fa-solid fa-volume-xmark'; // Icono de silencio
+                    if (muteIcon) muteIcon.className = 'fa-solid fa-volume-xmark'; // Icono de silencio
 
                     // B. Asignar la acción de clic al botón
                     muteButton.onclick = () => {
                         if (newVideo.muted) {
                             newVideo.muted = false;
-                            muteIcon.className = 'fa-solid fa-volume-high'; // Icono de sonido
+                            if (muteIcon) muteIcon.className = 'fa-solid fa-volume-high'; // Icono de sonido
                         } else {
                             newVideo.muted = true;
-                            muteIcon.className = 'fa-solid fa-volume-xmark'; // Icono de silencio
+                            if (muteIcon) muteIcon.className = 'fa-solid fa-volume-xmark'; // Icono de silencio
                         }
                     };
+                }
 
-                    // C. Configurar el video
-                    newVideo.currentTime = 0; 
-                    newVideo.play(); 
-                    
-                    // D. Escuchar cuándo termina
-                    newVideo.onended = () => {
-                        showSlide(currentSlide + 1);
-                    };
+                // C. Configurar el video
+                newVideo.currentTime = 0; 
+                newVideo.play(); 
+                
+                // D. Escuchar cuándo termina
+                newVideo.onended = () => {
+                    showSlide(currentSlide + 1);
+                };
 
+            } else {
+                // --- SI ES IMAGEN ---
+                
+                // Ocultar el botón de mute (si existe)
+                if (muteButton) muteButton.style.display = 'none'; 
+                
+                // Iniciar el temporizador normal de 7 segundos
+                slideTimer = setTimeout(() => {
+                    showSlide(currentSlide + 1);
+                }, 7000);
+            }
+        }
+
+        // 7. Eventos de los botones de navegación
+        nextButton.addEventListener('click', () => {
+            showSlide(currentSlide + 1);
+        });
+        prevButton.addEventListener('click', () => {
+            showSlide(currentSlide - 1);
+        });
+
+        // 8. Iniciar el slider
+        showSlide(currentSlide);
+
+
+        // ----------------------------------------------------------------------------------
+        // --- NUEVO CÓDIGO PARA BORRAR LA BARRA DE BÚSQUEDA ---
+        // ----------------------------------------------------------------------------------
+
+        const inputField = document.querySelector('.search-block-input');
+        const clearIcon = document.querySelector('.search-clear-icon');
+
+        if (inputField && clearIcon) {
+            
+            // Función para borrar el campo
+            function clearSearchInput() {
+                inputField.value = ''; // Establece el valor del input a vacío
+                inputField.focus(); // Vuelve a enfocar el input
+                toggleClearIcon(); // Oculta la 'x'
+            }
+
+            // Función para mostrar/ocultar la 'x' dinámicamente
+            function toggleClearIcon() {
+                // Usamos 'block' o 'inline-block' para mostrar, y 'none' para ocultar
+                // Asumo que el ícono está diseñado para aparecer a la derecha del input.
+                if (inputField.value.length > 0) {
+                    clearIcon.style.display = 'block'; 
                 } else {
-                    // --- SI ES IMAGEN ---
-                    
-                    // Ocultar el botón de mute
-                    muteButton.style.display = 'none'; 
-                    
-                    // Iniciar el temporizador normal de 7 segundos
-                    slideTimer = setTimeout(() => {
-                        showSlide(currentSlide + 1);
-                    }, 7000);
+                    clearIcon.style.display = 'none';
                 }
             }
 
-            // 7. Eventos de los botones de navegación
-            nextButton.addEventListener('click', () => {
-                showSlide(currentSlide + 1);
-            });
-            prevButton.addEventListener('click', () => {
-                showSlide(currentSlide - 1);
-            });
+            // 1. Agregar el Listener de evento al ícono para borrar
+            clearIcon.addEventListener('click', clearSearchInput);
 
-            // 8. Iniciar el slider
-            showSlide(currentSlide);
-        });
-    </script>
+            // 2. Escuchar cada vez que se teclea algo en el input (para mostrar/ocultar la 'x')
+            inputField.addEventListener('input', toggleClearIcon);
+            
+            // 3. Inicializar (ocultar la 'x' si no hay texto al cargar la página)
+            toggleClearIcon(); 
+        }
+        
+    });
+</script>
 </body>
 </html>
