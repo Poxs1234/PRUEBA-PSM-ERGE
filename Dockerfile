@@ -1,5 +1,5 @@
-# Etapa 1: Construcción
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Etapa 1: Construcción con .NET 9.0
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copia el archivo del proyecto y restaura dependencias
@@ -12,8 +12,8 @@ COPY . .
 # Construye y publica la aplicación
 RUN dotnet publish -c Release -o /app/publish
 
-# Etapa 2: Runtime (imagen más liviana)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# Etapa 2: Runtime con .NET 9.0
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 
 # Copia los archivos publicados desde la etapa de build
