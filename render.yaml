@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: proyectomovie
+    env: docker
+    dockerfilePath: Dockerfile
+    branch: main
+    plan: starter
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "80"
